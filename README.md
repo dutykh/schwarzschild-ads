@@ -1,14 +1,21 @@
+<!-- Davide Batic (Mathematics Department, Khalifa University of Science and Technology, Abu Dhabi, UAE), Alan S. Cornell (Department of Physics, University of Johannesburg, Auckland Park, South Africa), Dr. Denys Dutykh (Mathematics Department, Khalifa University of Science and Technology, Abu Dhabi, UAE) -->
+
 # Schwarzschild–AdS quasinormal modes
 
 Numerical data and high-precision Chebyshev spectral solvers for quasinormal
 modes (QNMs) of four-dimensional Schwarzschild–anti-de Sitter (SAdS) black
 holes.
 
-This repository accompanies the manuscript
-[*Quasinormal modes of Schwarzschild anti-de Sitter black holes: a spectral analysis*](pdfs/SCHWARZSCHILD_anti_de_SITTER_MASSLESS.pdf).
-It contains Maple worksheets for deriving and assembling the spectral matrix
-problem, Julia programs for solving and post-processing it, and tabulated QNM
-spectra.
+This repository accompanies the paper
+[*Scalar quasinormal modes of Schwarzschild–anti-de Sitter black holes: spectral analysis and a formal coefficient deformation*](https://doi.org/10.1140/epjc/s10052-026-16449-7)
+by D. Batic, A. S. Cornell and D. Dutykh, published open access in
+*Eur. Phys. J. C* **86**, 1252 (2026) (preprint:
+[arXiv:2607.15731](https://arxiv.org/abs/2607.15731)). It contains Maple
+worksheets for deriving and assembling the spectral matrix problem, Julia
+programs for solving and post-processing it, and tabulated QNM spectra. The
+PDF kept in `pdfs/` is the [preprint of 12 July 2026](pdfs/SCHWARZSCHILD_anti_de_SITTER_MASSLESS.pdf),
+written under an earlier title; the journal version is the one to cite (see
+[Citation and acknowledgement](#citation-and-acknowledgement)).
 
 ## Project status
 
@@ -80,7 +87,7 @@ A cos(θ) + B sin(θ) = 0,
 
 where `A` and `B` are the two independent coefficients in the scalar's
 large-radius expansion. This coefficient condition is the deformation studied
-in the accompanying manuscript; it should not be confused with the usual
+in the accompanying paper; it should not be confused with the usual
 alternative quantization for a scalar in the Breitenlohner–Freedman window.
 
 ## Repository structure
@@ -306,35 +313,83 @@ the associated Maple `a` tag (`a = 1000·x+`), and `θ = π/4`.
 - **Denys Dutykh**, Mathematics Department, Khalifa University of Science
   and Technology, Abu Dhabi, United Arab Emirates.
 
-## Citation
+## Citation and acknowledgement
 
-The bundled manuscript is dated July 12, 2026 and does not yet provide a DOI,
-journal reference, or arXiv identifier. Until publication metadata is
-available, please cite the manuscript provisionally as:
+Anyone who uses the spectra, the matrices, the worksheets or the programs of
+this repository in a paper, a thesis or a talk is asked to cite the published
+paper and, whenever the data or the codes themselves were used, to name the
+repository as well. The paper (version of record) is:
+
+> D. Batic, A. S. Cornell and D. Dutykh, *Scalar quasinormal modes of
+> Schwarzschild–anti-de Sitter black holes: spectral analysis and a formal
+> coefficient deformation*, Eur. Phys. J. C **86**, 1252 (2026),
+> [doi:10.1140/epjc/s10052-026-16449-7](https://doi.org/10.1140/epjc/s10052-026-16449-7).
+
+The paper was received on 21 July 2026, accepted on 23 September 2026 and
+published online on 29 October 2026, in issue 10 of volume 86. It is open
+access under the Creative Commons Attribution 4.0 licence, and
+[its page at the publisher](https://link.springer.com/article/10.1140/epjc/s10052-026-16449-7)
+gives the full text and the citation formats. The preprint is
+[arXiv:2607.15731](https://arxiv.org/abs/2607.15731) [gr-qc], submitted on
+17 July 2026; its title ends with "generalized boundary conditions" instead of
+"a formal coefficient deformation", so the journal reference above is the one
+to use.
 
 ```bibtex
-@misc{batic2026schwarzschildads,
+@article{batic2026scalar,
+  author        = {Batic, Davide and Cornell, Alan S. and Dutykh, Denys},
+  title         = {Scalar quasinormal modes of {Schwarzschild}--anti-de
+                   {Sitter} black holes: spectral analysis and a formal
+                   coefficient deformation},
+  journal       = {Eur. Phys. J. C},
+  volume        = {86},
+  number        = {10},
+  pages         = {1252},
+  year          = {2026},
+  doi           = {10.1140/epjc/s10052-026-16449-7},
+  url           = {https://doi.org/10.1140/epjc/s10052-026-16449-7},
+  eprint        = {2607.15731},
+  archivePrefix = {arXiv},
+  primaryClass  = {gr-qc}
+}
+```
+
+The codes and the numerical data have their own reference:
+
+> D. Batic, A. S. Cornell and D. Dutykh (2026), *Schwarzschild–AdS
+> quasinormal modes: spectral codes and numerical data*, GitHub repository.
+
+<https://github.com/dutykh/schwarzschild-ads>
+
+```bibtex
+@misc{batic2026sadsdata,
   author       = {Batic, Davide and Cornell, Alan S. and Dutykh, Denys},
-  title        = {Quasinormal Modes of Schwarzschild Anti-de Sitter Black Holes:
-                  A Spectral Analysis},
+  title        = {{Schwarzschild}--{AdS} quasinormal modes: spectral codes
+                  and numerical data},
   year         = {2026},
-  howpublished = {Manuscript},
+  howpublished = {GitHub repository},
   url          = {https://github.com/dutykh/schwarzschild-ads}
 }
 ```
 
-Repository citation:
+A result, a formula or a figure taken from the paper needs the paper reference
+alone. For frequencies read from the tables of `reports/`, or for calculations
+run with the Maple worksheets or the Julia solvers, a sentence such as the
+following in the acknowledgements or in the text is enough, where the bracketed
+number stands for the paper in your list of references:
 
-> Davide Batic, Alan S. Cornell, and Denys Dutykh (2026), *Schwarzschild–AdS
-> quasinormal modes: spectral codes and numerical data*,
-> <https://github.com/dutykh/schwarzschild-ads>.
+```text
+The quasinormal frequencies were taken from the numerical data and the spectral
+codes of Batic, Cornell and Dutykh [N], available at
+https://github.com/dutykh/schwarzschild-ads.
+```
 
-Please replace the provisional entry with the final publication citation once
-it becomes available.
+Since the repository will grow with the electromagnetic and gravitational
+sectors, please also quote the date of access or the commit that you used.
 
 ## Selected references
 
-The accompanying manuscript contains the complete bibliography. Particularly
+The accompanying paper contains the complete bibliography. Particularly
 relevant references for the methods and benchmarks in this repository are:
 
 1. G. T. Horowitz and V. E. Hubeny, *Phys. Rev. D* **62**, 024027 (2000).
