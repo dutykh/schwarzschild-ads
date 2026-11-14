@@ -1,220 +1,74 @@
 <!-- Davide Batic (Mathematics Department, Khalifa University of Science and Technology, Abu Dhabi, UAE), Alan S. Cornell (Department of Physics, University of Johannesburg, Auckland Park, South Africa), Dr. Denys Dutykh (Mathematics Department, Khalifa University of Science and Technology, Abu Dhabi, UAE) -->
 
-# Schwarzschild–AdS quasinormal modes
+# schwarzschild-ads: scalar quasinormal modes of Schwarzschild–anti-de Sitter black holes
 
-Numerical data and high-precision Chebyshev spectral solvers for quasinormal
-modes (QNMs) of four-dimensional Schwarzschild–anti-de Sitter (SAdS) black
-holes.
+![The least damped scalar quasinormal mode of Schwarzschild-anti-de Sitter black holes against the horizon radius, and the overtones of four multipoles](docs/figures/schwarzschild-ads-modes.png)
 
-This repository accompanies the paper
-[*Scalar quasinormal modes of Schwarzschild–anti-de Sitter black holes: spectral analysis and a formal coefficient deformation*](https://doi.org/10.1140/epjc/s10052-026-16449-7)
-by D. Batic, A. S. Cornell and D. Dutykh, published open access in
-*Eur. Phys. J. C* **86**, 1252 (2026) (preprint:
-[arXiv:2607.15731](https://arxiv.org/abs/2607.15731)). It contains Maple
-worksheets for deriving and assembling the spectral matrix problem, Julia
-programs for solving and post-processing it, and tabulated QNM spectra. The
-PDF kept in `pdfs/` is the [preprint of 12 July 2026](pdfs/SCHWARZSCHILD_anti_de_SITTER_MASSLESS.pdf),
-written under an earlier title; the journal version is the one to cite (see
-[Citation and acknowledgement](#citation-and-acknowledgement)).
+Scalar quasinormal modes Ω = ωR with the vanishing-field condition at the AdS boundary, read from the tables of
+`reports/s0-vanishing-AdS-boundary/`. Panel (a) shows the least damped mode of ℓ = 0 against the horizon radius
+x₊ = r₊/R, on logarithmic axes: for small black holes its real part tends to 3, the lowest normal mode of pure AdS
+(dotted line), while its damping rate vanishes; for large black holes both grow linearly, with Ω/x₊ ≈ 1.85 − 2.66i
+(dotted lines; 1.8495 − 2.6639i at x₊ = 100). Panel (b) shows the overtones of ℓ = 0, 1, 2 and 3 at x₊ = 0.4 with
+Re Ω ⩽ 20 and Im Ω ⩾ −12, which form nearly straight and parallel ladders.
 
-## Project status
+This repository holds the Maple worksheets, the Julia solvers and the computed spectra of the article by Davide Batic,
+Alan S. Cornell and Denys Dutykh in The European Physical Journal C (2026), cited below, on the quasinormal modes of a
+massless scalar field around four-dimensional Schwarzschild–anti-de Sitter black holes. The exterior of the black hole
+is compactified, the behaviour of the modes at the horizon and at the AdS boundary is factored out, and a Chebyshev
+collocation turns the radial equation into a quadratic matrix pencil, assembled in Maple with 200 decimal digits and
+solved in Julia with 220 digits at three resolutions, keeping the roots on which they agree. Two boundary conditions
+are treated: the standard vanishing field at the AdS boundary, and a one-parameter relation between the two
+coefficients of the field at large radius, which the article studies as a formal deformation. The tables of 48 cases
+are stored in `reports/`.
 
-The current release covers the **massless scalar perturbation sector**
-(`s = 0`):
+## The problem
 
-- the standard vanishing-field (Dirichlet) condition at the conformal AdS
-  boundary;
-- a generalized relation between the two independent scalar asymptotic
-  coefficients; and
-- benchmark and refinement data for small, intermediate, and large SAdS black
-  holes.
-
-The next part, covering **electromagnetic (`s = 1`) and gravitational
-(`s = 2`) perturbations**, is currently in preparation. The completed
-repository is intended to contain the data and code for all three perturbation
-sectors: scalar, electromagnetic, and gravitational.
-
-> [!IMPORTANT]
-> Although the Julia programs contain common labels and validation logic for
-> `s = 0, 1, 2`, the checked-in worksheets and numerical reports currently
-> belong to the scalar sector only. Electromagnetic and gravitational results
-> should not yet be inferred from the present data.
-
-## Scientific problem and numerical method
-
-The calculations use the dimensionless horizon radius and frequency
+With the horizon radius r₊, the AdS radius R and the time dependence exp(−iωt), the computations use
 
 ```text
-x+ = r+/R,        Ω = ωR,
+x₊ = r₊/R,      Ω = ωR,
 ```
 
-where `r+` is the event-horizon radius and `R` is the AdS radius. After the
-exterior radial domain is compactified and the asymptotic QNM behavior is
-factored out, Chebyshev collocation reduces the radial equation to the
-quadratic matrix pencil
+and, after the exterior is compactified and the behaviour of the modes is factored out, the collocation gives the
+quadratic pencil
 
 ```text
-M0 + i Ω M1 + Ω² M2 = 0.
+( M0 + i Ω M1 + Ω² M2 ) a = 0.
 ```
 
-The Maple assemblers construct `M0`, `M1`, and `M2` at three spectral
-resolutions. The Julia programs linearize the pencil, solve the corresponding
-generalized eigenvalue problems with arbitrary-precision arithmetic, filter
-finite candidate eigenvalues, and match modes across all three resolutions.
-The resolution-triplet comparison provides the numerical stability errors
-reported with each accepted mode.
+The Julia solvers linearise the pencil into a generalised eigenvalue problem, keep its finite eigenvalues, and match
+them across three resolutions: a root is kept when the three nearest roots lie within max(10⁻⁴, 10⁻⁴ · max(1, |Ω|)) of
+each other, and the tables give their average. A mode is damped when Im Ω < 0, growing when Im Ω > 0 and neutral when
+Im Ω vanishes within the tolerance of the solver.
 
-For the time convention
+The standard calculation imposes a vanishing field at the AdS boundary. The generalised one imposes
 
 ```text
-exp(-i ω t),
+A cos θ + B sin θ = 0,
 ```
 
-the programs classify modes as follows:
+where A and B are the two independent coefficients of the expansion of the field at large radius. This relation is the
+deformation studied in the article: for a massless scalar in four dimensions the slow branch lies outside the standard
+domain of finite energy, so the spectra obtained for θ ≠ 0 are formal ones, and the growing modes they contain do not
+establish a physical instability of the scalar field (see the abstract and the discussion of the article). It is not to
+be confused with the usual alternative quantisation of a scalar in the Breitenlohner–Freedman window.
 
-| Frequency | Time behavior |
-| --- | --- |
-| `Im(Ω) < 0` | damped |
-| `Im(Ω) > 0` | unstable |
-| `Im(Ω) ≈ 0` within the configured tolerance | neutral |
+The repository covers the scalar sector (s = 0) only. The Julia solvers carry labels and checks for s = 0, 1 and 2,
+but the worksheets and tables of the repository are those of the scalar field, and no electromagnetic or
+gravitational result can be read from them.
 
-The standard scalar calculation imposes vanishing field at the AdS boundary.
-The generalized scalar calculation instead imposes
+## Quick start
 
-```text
-A cos(θ) + B sin(θ) = 0,
-```
+First, in Maple, open the assembler of the boundary condition wanted, `Matrix_Assembler_s0_SAdS-Final Version.mw` for
+the vanishing field or `Matrix_Assembler_s0_SAdS-Final Version-BC2.mw` for the generalised relation, choose the
+multipole, the horizon radius, the angle θ where needed and three resolutions, set an output folder and execute the
+worksheet. It writes the matrices `M0-<N>-<tag>.mat`, `M1-<N>-<tag>.mat` and `M2-<N>-<tag>.mat`, where N is a
+resolution and the tag records the sector, the multipole, the horizon radius (both as a decimal `xp` value and as the
+integer `a = 1000 x₊`) and the angle. These matrices are not stored in the repository.
 
-where `A` and `B` are the two independent coefficients in the scalar's
-large-radius expansion. This coefficient condition is the deformation studied
-in the accompanying paper; it should not be confused with the usual
-alternative quantization for a scalar in the Breitenlohner–Freedman window.
-
-## Repository structure
-
-```text
-.
-├── julia/
-│   ├── SAdS_scalar_qnm_solver.jl
-│   └── SAdS_scalar_qnm_solver_generalized_bc_fixed.jl
-├── maple/
-│   ├── 01-CASE-s0-SUPPLEMENTAL MATERIAL.mw
-│   ├── 02-CASE-s0-SUPPLEMENTAL MATERIAL-General_BCs.mw
-│   ├── Matrix_Assembler_s0_SAdS-Final Version.mw
-│   └── Matrix_Assembler_s0_SAdS-Final Version-BC2.mw
-├── pdfs/
-│   └── SCHWARZSCHILD_anti_de_SITTER_MASSLESS.pdf
-├── reports/
-│   ├── s0-vanishing-AdS-boundary/
-│   │   ├── L0/    # 15 files, x+ from 1/25 up to 100
-│   │   ├── L1/    # 3 files:  x+ = 0.4, 1, 50
-│   │   ├── L2/    # 3 files:  x+ = 0.4, 1, 50
-│   │   └── L3/    # 3 files:  x+ = 0.4, 1, 50
-│   └── s0-generalized BC/
-│       └── L0/
-│           ├── xp0_01/  xp0_01_refinement/   # θ = π/2…3π/8 ; π/16…3π/32
-│           ├── xp1_0/   xp1_0_refinement/
-│           └── xp50_0/  xp50_0_refinement/
-├── .gitignore
-├── LICENSE
-└── README.md
-```
-
-### Maple worksheets
-
-| File | Purpose |
-| --- | --- |
-| `01-CASE-s0-SUPPLEMENTAL MATERIAL.mw` | Scalar derivation and supplemental calculations for the standard AdS boundary condition |
-| `02-CASE-s0-SUPPLEMENTAL MATERIAL-General_BCs.mw` | Scalar derivation and supplemental calculations for generalized coefficient boundary conditions |
-| `Matrix_Assembler_s0_SAdS-Final Version.mw` | Builds the standard scalar quadratic-pencil matrices |
-| `Matrix_Assembler_s0_SAdS-Final Version-BC2.mw` | Builds the generalized-boundary-condition scalar matrices |
-
-The assemblers export matrix files with names of the form
-`M0-N-<tag>.mat`, `M1-N-<tag>.mat`, and `M2-N-<tag>.mat`, where `N` is a
-spectral resolution and `<tag>` records the sector, multipole, black-hole
-size (as both the decimal `xp` value and the integer `a = 1000·x+` tag),
-and, when relevant, the boundary angle.
-
-### Julia solvers
-
-- `SAdS_scalar_qnm_solver.jl` solves the standard vanishing-boundary problem.
-- `SAdS_scalar_qnm_solver_generalized_bc_fixed.jl` solves the generalized
-  coefficient-boundary problem and supports rational and decimal `x+` inputs
-  and angle tags such as `th1over4pi`.
-
-Both programs read three complete `M0/M1/M2` matrix triplets, determine a
-compatible file tag, solve and compare the spectra, write readable and
-full-precision tables, split stable modes by time behavior, and generate
-plots.
-
-### Numerical reports
-
-The repository currently contains 48 scalar report files:
-
-- `reports/s0-vanishing-AdS-boundary/` contains standard-boundary spectra for
-  multipoles `ℓ = 0, 1, 2, 3` and several values of `x+`;
-- `reports/s0-generalized BC/` contains `ℓ = 0` generalized-boundary spectra
-  for representative `x+ = 0.01, 1, 50` cases and near-Dirichlet refinement
-  angles.
-
-Each report header records the background, sector, `ℓ`, `x+`, `epsilon`
-(`= 1 − s²`), file tag, matrix pencil, time convention, and, where applicable,
-`θ`. Each row gives an index `k`, the mode averaged over the three resolutions
-(`Re(avg)`, `Im(avg)`), the three pairwise matching errors (`err12`, `err23`,
-`err13`), and their maximum (`maxerr`). The committed reports are the concise
-readable tables; additional detailed
-and full-precision companion files are produced when the Julia solvers are run
-locally.
-
-## Requirements
-
-- [Maple](https://www.maplesoft.com/products/Maple/) to inspect the worksheets
-  and generate spectral matrices.
-- [Julia](https://julialang.org/) to solve and post-process the matrix pencils.
-- Julia packages:
-  - [`GenericSchur.jl`](https://github.com/RalphAS/GenericSchur.jl)
-  - [`Plots.jl`](https://docs.juliaplots.org/)
-  - [`PlotlyJS.jl`](https://github.com/JuliaPlots/PlotlyJS.jl) for the default
-    interactive plotting backend and HTML output. It is enabled by default
-    (`SADS_USE_PLOTLYJS=true`); if it is unavailable the programs warn and fall
-    back to the GR backend, so it remains optional.
-
-`DelimitedFiles`, `Printf`, `LinearAlgebra`, and `Base.Threads` are provided by
-Julia's standard library.
-
-This repository does not currently include a `Project.toml` or a pinned Julia
-environment. Install the required packages in an environment of your choice:
-
-```bash
-julia -e 'using Pkg; Pkg.add(["GenericSchur", "Plots", "PlotlyJS"])'
-```
-
-## Running the calculations
-
-### 1. Generate the matrix data in Maple
-
-Open the relevant matrix assembler in `maple/`, select the physical parameters
-and three spectral resolutions, set an output directory, and execute the
-worksheet. Use:
-
-- `Matrix_Assembler_s0_SAdS-Final Version.mw` for the standard boundary
-  condition;
-- `Matrix_Assembler_s0_SAdS-Final Version-BC2.mw` for the generalized
-  coefficient condition.
-
-For every resolution listed in `SADS_N_VALS`, the output directory must contain
-a matching `M0`, `M1`, and `M2` file. The Julia programs validate all nine
-files before starting the expensive eigenvalue calculations.
-
-> [!NOTE]
-> The Maple-generated `.mat` inputs are not committed to this repository. The
-> files under `reports/` are final QNM tables, not matrix inputs for the Julia
-> programs.
-
-### 2. Run the standard scalar solver
-
-From the repository root, replace the example paths and parameters with those
-used in Maple:
+Second, run the Julia solver of the same condition from the root of the repository, giving through environment
+variables the folder of the matrices and the parameters used in Maple (the default data folder of each program is a
+folder of the authors' computer, so `SADS_DATA_DIR` must always be set):
 
 ```bash
 export SADS_DATA_DIR=/absolute/path/to/standard-matrices
@@ -223,14 +77,10 @@ export SADS_SPIN=0
 export SADS_ELL=0
 export SADS_XPLUS=1
 export SADS_N_VALS=90,95,100
-
 julia --threads=auto julia/SAdS_scalar_qnm_solver.jl
 ```
 
-### 3. Run the generalized-boundary scalar solver
-
-The following example requests `θ = π/4`. In this interface, `1/4` means the
-rational multiple `π/4` for the boundary angle and its Maple filename tag.
+For the generalised condition, the angle is given as a rational multiple of π (here θ = π/4):
 
 ```bash
 export SADS_DATA_DIR=/absolute/path/to/generalized-bc-matrices
@@ -240,172 +90,144 @@ export SADS_ELL=0
 export SADS_XPLUS=1
 export SADS_THETA=1/4
 export SADS_N_VALS=190,195,200
-
 julia --threads=auto julia/SAdS_scalar_qnm_solver_generalized_bc_fixed.jl
 ```
 
-The generalized solver also accepts forms such as `pi/4`, `1over4`, and
-`th1over4pi`. Set `SADS_THETA_TAG` or the complete `SADS_FILETAG` explicitly
-when automatic tag detection cannot match the filenames produced by Maple.
+The generalised solver also accepts the forms `pi/4`, `1over4` and `th1over4pi`. When the automatic detection of the
+tag does not match the names written by Maple, `SADS_THETA_TAG` or the complete `SADS_FILETAG` can be set. Each
+program checks that the nine matrix files exist before solving. A run writes into `SADS_OUT_DIR` the finite and the
+filtered spectra at each resolution, the table of retained modes `stable_modes-<tag>.txt` with a detailed and a
+full-precision companion, separate tables of the damped, growing, neutral, oscillatory and purely imaginary modes, and
+pictures of the spectra (PNG, and HTML when the PlotlyJS backend is available). A tag such as
+`s0_L0_xp1_a1000_th1over4pi` stands for the scalar sector, ℓ = 0, x₊ = 1 (a = 1000) and θ = π/4.
 
-The source files contain author-machine Windows paths as historical defaults.
-For portable use, always set `SADS_DATA_DIR` and preferably `SADS_OUT_DIR`.
+The variables read by the two programs are
 
-## Configuration
-
-The most commonly used environment variables are:
-
-| Variable | Meaning | Standard default | Generalized default |
+| Variable | Meaning | Default, standard solver | Default, generalised solver |
 | --- | --- | --- | --- |
-| `SADS_DATA_DIR` | Directory containing Maple-generated matrices | Author-machine path | Author-machine path |
-| `SADS_OUT_DIR` | Directory for tables and plots | `<DATA_DIR>/Julia/<FILETAG>` | `<DATA_DIR>/Julia/<FILETAG>` |
-| `SADS_SPIN` | Perturbation-sector label | `0` | `0` |
-| `SADS_ELL` | Angular multipole `ℓ` | `0` | `3` |
-| `SADS_XPLUS` | Dimensionless horizon radius `r+/R` | `50` | `50` |
-| `SADS_N_VALS` | Exactly three spectral resolutions | `90,95,100` | `190,195,200` |
-| `SADS_FILETAG` | Complete matrix filename tag | auto-detected | auto-detected |
-| `SADS_XPLUS_TAG` | Override for the `x+` filename tag | derived | derived |
-| `SADS_ATAG` | Override for the integer `a` filename tag (`a = round(1000·x+)`) | derived | derived |
-| `SADS_THETA` | Generalized boundary angle | not used | `0` |
-| `SADS_THETA_TAG` | Override for the angle filename tag | not used | derived |
+| `SADS_DATA_DIR` | folder of the Maple matrices | a folder of the authors' computer | a folder of the authors' computer |
+| `SADS_OUT_DIR` | folder of the tables and pictures | `<DATA_DIR>/Julia/<FILETAG>` | `<DATA_DIR>/Julia/<FILETAG>` |
+| `SADS_SPIN` | perturbation sector | `0` | `0` |
+| `SADS_ELL` | multipole ℓ | `0` | `3` |
+| `SADS_XPLUS` | horizon radius x₊ = r₊/R | `50` | `50` |
+| `SADS_N_VALS` | the three resolutions | `90,95,100` | `190,195,200` |
+| `SADS_FILETAG` | complete tag of the matrix files | detected | detected |
+| `SADS_XPLUS_TAG`, `SADS_ATAG` | parts of the tag for x₊ and for a = round(1000 x₊) | derived | derived |
+| `SADS_THETA`, `SADS_THETA_TAG` | angle of the generalised condition and its tag | not used | `0`, derived |
 
-Advanced controls include:
+and the constants near the top of each file document the others: the digits of the matrix files and of the arithmetic
+(`SADS_FILE_DECIMAL_DIGITS`, 200, and `SADS_WORK_DECIMAL_DIGITS`, 220), the matching tolerances (`SADS_STABLE_RELTOL`
+and `SADS_STABLE_ABSTOL`, both 10⁻⁴), the filters of the zero mode and of the damping, the classification of the modes,
+the plotting backend (`SADS_USE_PLOTLYJS`, true, with GR as a fallback) and, for the generalised solver, the treatment
+of the boundary row (`SADS_REDUCE_BOUNDARY_ROW`, `SADS_BOUNDARY_ROW_TOL`).
 
-- precision and display: `SADS_FILE_DECIMAL_DIGITS`,
-  `SADS_WORK_DECIMAL_DIGITS`, `SADS_DISPLAY_ZERO_TOL` (magnitude below which
-  `Re`/`Im` values print as `0`);
-- resolution matching: `SADS_STABLE_RELTOL`, `SADS_STABLE_ABSTOL`;
-- zero-mode and time-behavior filters: `SADS_DISCARD_ZERO_MODE`,
-  `SADS_ZERO_MODE_TOL`, `SADS_SEARCH_UNSTABLE`, `SADS_DAMPING_TOL`;
-- symmetry and mode classification: `SADS_KEEP_REPRESENTATIVE_BRANCH`,
-  `SADS_REPRESENTATIVE_RE_TOL`, `SADS_PURE_IMAG_RE_TOL`;
-- plotting: `SADS_USE_PLOTLYJS`, `SADS_SAVE_HTML_PLOTS`,
-  `SADS_PLOT_ZERO_TOL`;
-- generalized boundary-row handling: `SADS_REDUCE_BOUNDARY_ROW`,
-  `SADS_BOUNDARY_ROW_TOL`.
+## Contents
 
-See the documented constant definitions near the beginning of each Julia file
-for defaults and precise behavior.
+| Path | What it holds |
+| --- | --- |
+| `maple/01-CASE-s0-SUPPLEMENTAL MATERIAL.mw` | the derivation for the vanishing-field condition |
+| `maple/02-CASE-s0-SUPPLEMENTAL MATERIAL-General_BCs.mw` | the derivation for the generalised condition |
+| `maple/Matrix_Assembler_s0_SAdS-Final Version.mw` | the assembler of the pencil for the vanishing-field condition |
+| `maple/Matrix_Assembler_s0_SAdS-Final Version-BC2.mw` | the assembler of the pencil for the generalised condition |
+| `julia/SAdS_scalar_qnm_solver.jl` | the solver for the vanishing-field condition |
+| `julia/SAdS_scalar_qnm_solver_generalized_bc_fixed.jl` | the solver for the generalised condition |
+| `reports/s0-vanishing-AdS-boundary/` | 24 tables: ℓ = 0 at 15 horizon radii from x₊ = 1/25 to 100, and ℓ = 1, 2, 3 at x₊ = 0.4, 1 and 50 |
+| `reports/s0-generalized BC/L0/` | 24 tables for ℓ = 0 at x₊ = 0.01, 1 and 50: θ = π/8, π/4, 3π/8 and π/2 in the folders `xp…`, and θ = π/64, π/32, π/16 and 3π/32, closer to the vanishing field, in the folders `xp…_refinement` |
+| `pdfs/SCHWARZSCHILD_anti_de_SITTER_MASSLESS.pdf` | the preprint of 12 July 2026, under an earlier title |
+| `docs/figures/` | the script that draws the figure of this page from the tables, and the style file beside it |
 
-## Output files
+Each table begins with a header giving the background, the sector, ℓ, x₊, the tag, the pencil, the time convention and,
+for the generalised condition, θ; its rows give the index `k`, the average `Re(avg)` and `Im(avg)` of the three matched
+roots, the three distances `err12`, `err23`, `err13` between them and their maximum `maxerr`. The detailed and
+full-precision companions that the solvers also write are not stored. In one table,
+`reports/s0-vanishing-AdS-boundary/L0/s0_L0_xp0_4.txt`, the header line `xplus = r_+/R = 50.0` is wrong: the tag of the
+same header (`a400`) and the modes (2.362928 − 1.006471i for the least damped one, the value 2.3629 − 1.0064i that the
+article gives at x₊ = 0.4) are those of x₊ = 0.4.
 
-A solver run writes its results beneath `SADS_OUT_DIR`. Outputs include:
+## Requirements
 
-- finite and filtered candidate spectra for each resolution;
-- `stable_modes-<tag>.txt`, plus detailed and full-precision companions;
-- separate damped, unstable, neutral, oscillatory, and purely imaginary mode
-  tables;
-- all-mode and stable-mode plots, with additional category-specific plots when
-  the corresponding mode set is nonempty;
-- PNG plots and, when enabled and supported by the plotting backend, HTML
-  plots.
+Maple, for the worksheets and the matrices. Julia, for the solvers, with the packages GenericSchur, Plots and PlotlyJS
+(the last one optional, the programs falling back to the GR backend without it); DelimitedFiles, Printf,
+LinearAlgebra and Base.Threads come with Julia. The repository has no `Project.toml`; the packages are installed with
 
-Filename tags encode the parameters. For example,
-`s0_L0_xp1_a1000_th1over4pi` denotes the scalar sector, `ℓ = 0`, `x+ = 1`,
-the associated Maple `a` tag (`a = 1000·x+`), and `θ = π/4`.
+```bash
+julia -e 'using Pkg; Pkg.add(["GenericSchur", "Plots", "PlotlyJS"])'
+```
+
+The figure of this page is drawn from `docs/figures/` by `python3 plot_readme_figure.py` (Python 3 with NumPy and
+Matplotlib).
+
+## How to cite
+
+If you use the spectra, the matrices, the worksheets or the programs of this repository, please cite the article:
+
+D. Batic, A. S. Cornell and D. Dutykh, Scalar quasinormal modes of Schwarzschild–anti-de Sitter black holes: spectral
+analysis and a formal coefficient deformation, The European Physical Journal C 86, 1252 (2026).
+
+https://doi.org/10.1140/epjc/s10052-026-16449-7
+
+```bibtex
+@article{Batic2026l,
+  author = {Batic, Davide and Cornell, Alan S. and Dutykh, Denys},
+  title = {Scalar Quasinormal Modes of {{Schwarzschild}}--Anti-de {{Sitter}} Black Holes: Spectral Analysis and a Formal Coefficient Deformation},
+  journal = {The European Physical Journal C},
+  year = 2026,
+  month = oct,
+  volume = {86},
+  number = {10},
+  pages = {1252},
+  doi = {10.1140/epjc/s10052-026-16449-7}
+}
+```
+
+The button "Cite this repository" in the right-hand column of this page gives the same reference, read from
+`CITATION.cff`. The article is open access; its preprint, whose title ends with "generalized boundary conditions", is
+on arXiv:
+
+https://arxiv.org/abs/2607.15731
+
+When the tables of `reports/` or the codes themselves were used, please also name the repository, for instance by a
+sentence such as the following, where [N] stands for the article in your list of references:
+
+```text
+The quasinormal frequencies were taken from the numerical data and the spectral codes of Batic, Cornell and
+Dutykh [N], available at https://github.com/dutykh/schwarzschild-ads.
+```
+
+The quasinormal-mode codes of this family are gathered in the QNMs Hall of Fame:
+
+https://qnms.denys-dutykh.com/
+
+## References
+
+The article gives the complete bibliography. The works most relevant to the methods and benchmarks of this repository
+are the following.
+
+1. G. T. Horowitz and V. E. Hubeny, Quasinormal modes of AdS black holes and the approach to thermal equilibrium,
+   Physical Review D 62, 024027 (2000). https://doi.org/10.1103/physrevd.62.024027
+2. A. Ishibashi and R. M. Wald, Dynamics in non-globally-hyperbolic static spacetimes: II. General analysis of
+   prescriptions for dynamics, Classical and Quantum Gravity 20, 3815–3826 (2003).
+   https://doi.org/10.1088/0264-9381/20/16/318
+3. A. Ishibashi and R. M. Wald, Dynamics in non-globally-hyperbolic static spacetimes: III. Anti-de Sitter spacetime,
+   Classical and Quantum Gravity 21, 2981–3013 (2004). https://doi.org/10.1088/0264-9381/21/12/012
+4. V. Cardoso, R. Konoplya and J. P. S. Lemos, Quasinormal frequencies of Schwarzschild black holes in anti–de Sitter
+   spacetimes: a complete study of the overtone asymptotic behavior, Physical Review D 68, 044024 (2003).
+   https://doi.org/10.1103/physrevd.68.044024
+5. M. Wang, C. Herdeiro and M. O. P. Sampaio, Maxwell perturbations on asymptotically anti–de Sitter spacetimes:
+   generic boundary conditions and a new branch of quasinormal modes, Physical Review D 92, 124006 (2015).
+   https://doi.org/10.1103/physrevd.92.124006
+6. R. G. Daghigh, M. D. Green and J. C. Morey, Calculating quasinormal modes of Schwarzschild anti–de Sitter black holes
+   using the continued fraction method, Physical Review D 107, 024023 (2023).
+   https://doi.org/10.1103/physrevd.107.024023
+
+## Licence
+
+GNU Lesser General Public License, version 2.1 (see `LICENSE`).
 
 ## Authors
 
-- **Davide Batic**, Mathematics Department, Khalifa University of Science
-  and Technology, Abu Dhabi, United Arab Emirates.
-- **Alan S. Cornell**, Department of Physics, University of Johannesburg,
-  Auckland Park, South Africa.
-- **Denys Dutykh**, Mathematics Department, Khalifa University of Science
-  and Technology, Abu Dhabi, United Arab Emirates.
+Davide Batic (Mathematics Department, Khalifa University of Science and Technology, Abu Dhabi), Alan S. Cornell
+(Department of Physics, University of Johannesburg) and Denys Dutykh (Mathematics Department, Khalifa University of
+Science and Technology, Abu Dhabi).
 
-## Citation and acknowledgement
-
-Anyone who uses the spectra, the matrices, the worksheets or the programs of
-this repository in a paper, a thesis or a talk is asked to cite the published
-paper and, whenever the data or the codes themselves were used, to name the
-repository as well. The paper (version of record) is:
-
-> D. Batic, A. S. Cornell and D. Dutykh, *Scalar quasinormal modes of
-> Schwarzschild–anti-de Sitter black holes: spectral analysis and a formal
-> coefficient deformation*, Eur. Phys. J. C **86**, 1252 (2026),
-> [doi:10.1140/epjc/s10052-026-16449-7](https://doi.org/10.1140/epjc/s10052-026-16449-7).
-
-The paper was received on 21 July 2026, accepted on 23 September 2026 and
-published online on 29 October 2026, in issue 10 of volume 86. It is open
-access under the Creative Commons Attribution 4.0 licence, and
-[its page at the publisher](https://link.springer.com/article/10.1140/epjc/s10052-026-16449-7)
-gives the full text and the citation formats. The preprint is
-[arXiv:2607.15731](https://arxiv.org/abs/2607.15731) [gr-qc], submitted on
-17 July 2026; its title ends with "generalized boundary conditions" instead of
-"a formal coefficient deformation", so the journal reference above is the one
-to use.
-
-```bibtex
-@article{batic2026scalar,
-  author        = {Batic, Davide and Cornell, Alan S. and Dutykh, Denys},
-  title         = {Scalar quasinormal modes of {Schwarzschild}--anti-de
-                   {Sitter} black holes: spectral analysis and a formal
-                   coefficient deformation},
-  journal       = {Eur. Phys. J. C},
-  volume        = {86},
-  number        = {10},
-  pages         = {1252},
-  year          = {2026},
-  doi           = {10.1140/epjc/s10052-026-16449-7},
-  url           = {https://doi.org/10.1140/epjc/s10052-026-16449-7},
-  eprint        = {2607.15731},
-  archivePrefix = {arXiv},
-  primaryClass  = {gr-qc}
-}
-```
-
-The codes and the numerical data have their own reference:
-
-> D. Batic, A. S. Cornell and D. Dutykh (2026), *Schwarzschild–AdS
-> quasinormal modes: spectral codes and numerical data*, GitHub repository.
-
-<https://github.com/dutykh/schwarzschild-ads>
-
-```bibtex
-@misc{batic2026sadsdata,
-  author       = {Batic, Davide and Cornell, Alan S. and Dutykh, Denys},
-  title        = {{Schwarzschild}--{AdS} quasinormal modes: spectral codes
-                  and numerical data},
-  year         = {2026},
-  howpublished = {GitHub repository},
-  url          = {https://github.com/dutykh/schwarzschild-ads}
-}
-```
-
-A result, a formula or a figure taken from the paper needs the paper reference
-alone. For frequencies read from the tables of `reports/`, or for calculations
-run with the Maple worksheets or the Julia solvers, a sentence such as the
-following in the acknowledgements or in the text is enough, where the bracketed
-number stands for the paper in your list of references:
-
-```text
-The quasinormal frequencies were taken from the numerical data and the spectral
-codes of Batic, Cornell and Dutykh [N], available at
-https://github.com/dutykh/schwarzschild-ads.
-```
-
-Since the repository will grow with the electromagnetic and gravitational
-sectors, please also quote the date of access or the commit that you used.
-
-## Selected references
-
-The accompanying paper contains the complete bibliography. Particularly
-relevant references for the methods and benchmarks in this repository are:
-
-1. G. T. Horowitz and V. E. Hubeny, *Phys. Rev. D* **62**, 024027 (2000).
-2. A. Ishibashi and R. M. Wald, *Class. Quantum Grav.* **20**, 3815 (2003),
-   [arXiv:gr-qc/0305012](https://arxiv.org/abs/gr-qc/0305012).
-3. A. Ishibashi and R. M. Wald, *Class. Quantum Grav.* **21**, 2981 (2004),
-   [arXiv:hep-th/0402184](https://arxiv.org/abs/hep-th/0402184).
-4. V. Cardoso, R. Konoplya, and J. P. S. Lemos, *Phys. Rev. D* **68**, 044024
-   (2003), [arXiv:gr-qc/0305037](https://arxiv.org/abs/gr-qc/0305037).
-5. M. Wang, C. Herdeiro, and M. O. P. Sampaio, *Phys. Rev. D* **92**, 124006
-   (2015), [arXiv:1510.04713](https://arxiv.org/abs/1510.04713).
-6. R. G. Daghigh, M. D. Green, and J. C. Morey, *Phys. Rev. D* **107**, 024023
-   (2023), [arXiv:2209.09324](https://arxiv.org/abs/2209.09324).
-
-## License
-
-This repository is distributed under the
-[GNU Lesser General Public License, version 2.1](LICENSE). See `LICENSE` for
-the complete terms.
+https://www.denys-dutykh.com/

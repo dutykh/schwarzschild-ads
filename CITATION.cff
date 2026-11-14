@@ -1,0 +1,57 @@
+# Dr. Denys Dutykh (Mathematics Department, Khalifa University of Science and Technology, Abu Dhabi, UAE)
+cff-version: 1.2.0
+message: "If you use these codes or data, please cite the article given under preferred-citation."
+title: "schwarzschild-ads: scalar quasinormal modes of Schwarzschild–anti-de Sitter black holes"
+type: software
+authors:
+  - family-names: Batic
+    given-names: Davide
+    affiliation: "Khalifa University of Science and Technology"
+    orcid: "https://orcid.org/0000-0002-7619-4900"
+  - family-names: Cornell
+    given-names: Alan S.
+    affiliation: "University of Johannesburg"
+  - family-names: Dutykh
+    given-names: Denys
+    affiliation: "Khalifa University of Science and Technology"
+    orcid: "https://orcid.org/0000-0001-5247-2788"
+repository-code: "https://github.com/dutykh/schwarzschild-ads"
+license: LGPL-2.1-only
+version: 1.0.0
+date-released: "2026-11-14"
+keywords:
+  - black-holes
+  - quasinormal-modes
+  - general-relativity
+  - anti-de-sitter
+  - schwarzschild-black-hole
+  - spectral-methods
+  - chebyshev-polynomials
+  - julia
+  - maple
+  - reproducible-research
+abstract: >-
+  Maple worksheets, Julia solvers and computed spectra for the quasinormal modes of a massless scalar field around
+  four-dimensional Schwarzschild–anti-de Sitter black holes, with the vanishing-field condition at the AdS boundary and
+  with a one-parameter relation between the two coefficients of the field at large radius, studied as a formal
+  deformation. A Chebyshev collocation turns the radial problem into a quadratic matrix pencil, assembled with 200
+  decimal digits and solved with 220 digits at three resolutions, and only the roots on which they agree are kept;
+  48 tables of modes are included.
+preferred-citation:
+  type: article
+  title: 'Scalar Quasinormal Modes of Schwarzschild–Anti-de Sitter Black Holes: Spectral Analysis and a Formal Coefficient
+    Deformation'
+  authors:
+  - family-names: Batic
+    given-names: Davide
+  - family-names: Cornell
+    given-names: Alan S.
+  - family-names: Dutykh
+    given-names: Denys
+  journal: The European Physical Journal C
+  volume: 86
+  issue: '10'
+  start: 1252
+  year: 2026
+  month: 10
+  doi: 10.1140/epjc/s10052-026-16449-7
