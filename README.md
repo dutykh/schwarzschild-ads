@@ -139,10 +139,7 @@ of the boundary row (`SADS_REDUCE_BOUNDARY_ROW`, `SADS_BOUNDARY_ROW_TOL`).
 Each table begins with a header giving the background, the sector, ℓ, x₊, the tag, the pencil, the time convention and,
 for the generalised condition, θ; its rows give the index `k`, the average `Re(avg)` and `Im(avg)` of the three matched
 roots, the three distances `err12`, `err23`, `err13` between them and their maximum `maxerr`. The detailed and
-full-precision companions that the solvers also write are not stored. In one table,
-`reports/s0-vanishing-AdS-boundary/L0/s0_L0_xp0_4.txt`, the header line `xplus = r_+/R = 50.0` is wrong: the tag of the
-same header (`a400`) and the modes (2.362928 − 1.006471i for the least damped one, the value 2.3629 − 1.0064i that the
-article gives at x₊ = 0.4) are those of x₊ = 0.4.
+full-precision companions that the solvers also write are not stored.
 
 ## Requirements
 
